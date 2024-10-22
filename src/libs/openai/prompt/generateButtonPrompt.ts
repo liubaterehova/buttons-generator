@@ -11,7 +11,7 @@ const generateUserMessage = (params: GeneratePromptParams) => {
   return `Create a HTML code of a button with color ${color}, title ${title}, and size ${size}. You must use exactly the following title: ${title}.`;
 };
 
-export const generatePrompt = (
+export const generateButtonPrompt = (
   params: GeneratePromptParams,
 ): IPromptMessage[] => {
   return [

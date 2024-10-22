@@ -6,6 +6,8 @@ import { FormLayout } from '../components/FormLayout';
 import { useToast } from '../hooks';
 import { fetchOpenAi } from '../libs/openai/index';
 import { useFetchMutation } from '../hooks/useFetchMutation';
+import { generateButtonPrompt } from '../libs/openai/prompt';
+import { MarkdownCode } from '../components/MarkdownCode';
 
 const extractErrorMessage = (error: unknown) => {
   if (
@@ -30,26 +32,26 @@ export const ButtonGenerator = () => {
 
   const [color, setColor] = React.useState('');
   const [size, setSize] = React.useState('');
-  const [text, setText] = React.useState('');
+  const [title, setTitle] = React.useState('');
 
   document.title = 'Buttons Generator';
 
   const handleClickSendPrompt = async () => {
     try {
-      await fetchOpenAiMutation(prompt);
+      await fetchOpenAiMutation(generateButtonPrompt({ color, size, title }));
     } catch (error) {
       showToast({ type: 'error', message: extractErrorMessage(error) });
     }
   };
 
-  const isButtonDisabled = !prompt.trim() || isFetchingPrompt;
+  const isButtonDisabled =
+    (!color.trim() && !size.trim() && !title.trim()) || isFetchingPrompt;
 
   return (
     <section className="grid mx-auto max-w-2xl mb-10">
       <h1 className="my-10 text-2xl font-bold text-center">
         Customize your button styles
       </h1>
-
       <FormLayout>
         <LabeledInput
           label="Color"
@@ -67,12 +69,11 @@ export const ButtonGenerator = () => {
 
         <LabeledInput
           label="Title"
-          value={text}
-          onChange={setText}
+          value={title}
+          onChange={setTitle}
           placeholder="Enter button title"
         />
       </FormLayout>
-
       <button
         disabled={isButtonDisabled}
         onClick={handleClickSendPrompt}
@@ -83,17 +84,10 @@ export const ButtonGenerator = () => {
             : 'mt-10 mb-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
         }
       >
-        {isFetchingPrompt ? (
-          <>
-            <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24" />
-            Loading...
-          </>
-        ) : (
-          'Generate code'
-        )}
+        {isFetchingPrompt ? 'Loading...' : 'Generate code'}
       </button>
 
-      {aiComponent}
+      {!!aiComponent && <MarkdownCode code={aiComponent} />}
     </section>
   );
 };

@@ -1,1 +1,1 @@
-export { generatePrompt } from './generatePrompt';
+export { generateButtonPrompt } from './generateButtonPrompt';
