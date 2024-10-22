@@ -48,44 +48,50 @@ export const ButtonGenerator = () => {
     (!color.trim() && !size.trim() && !title.trim()) || isFetchingPrompt;
 
   return (
-    <section className="grid mx-auto max-w-2xl mb-10">
-      <h1 className="my-10 text-2xl font-bold text-center">
-        Customize your button styles
-      </h1>
-      <FormLayout>
-        <LabeledInput
-          label="Color"
-          value={color}
-          onChange={setColor}
-          placeholder="Enter preferred color"
-        />
+    <section className="grid container mx-auto">
+      <section className="grid gap-10 my-10 mx-auto max-w-2xl">
+        <h1 className="text-2xl font-bold text-center">
+          Customize your button styles
+        </h1>
+        <FormLayout>
+          <LabeledInput
+            label="Color"
+            value={color}
+            onChange={setColor}
+            placeholder="Enter preferred color"
+            maxLength={50}
+          />
 
-        <LabeledInput
-          label="Size"
-          value={size}
-          onChange={setSize}
-          placeholder="Enter preferred size"
-        />
+          <LabeledInput
+            label="Size"
+            value={size}
+            onChange={setSize}
+            placeholder="Enter preferred size"
+            maxLength={50}
+          />
 
-        <LabeledInput
-          label="Title"
-          value={title}
-          onChange={setTitle}
-          placeholder="Enter button title"
-        />
-      </FormLayout>
-      <button
-        disabled={isButtonDisabled}
-        onClick={handleClickSendPrompt}
-        title={'Enter the prompt'}
-        className={
-          isButtonDisabled
-            ? 'mt-10 mb-10 bg-blue-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed'
-            : 'mt-10 mb-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-        }
-      >
-        {isFetchingPrompt ? 'Loading...' : 'Generate code'}
-      </button>
+          <LabeledInput
+            label="Title"
+            value={title}
+            onChange={setTitle}
+            placeholder="Enter button title"
+            maxLength={50}
+          />
+        </FormLayout>
+
+        <button
+          disabled={isButtonDisabled}
+          onClick={handleClickSendPrompt}
+          title="Enter the prompt"
+          className={
+            isButtonDisabled
+              ? 'bg-blue-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed'
+              : 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          }
+        >
+          {isFetchingPrompt ? 'Loading...' : 'Generate code'}
+        </button>
+      </section>
 
       {!!aiComponent && <MarkdownCode code={aiComponent} />}
     </section>

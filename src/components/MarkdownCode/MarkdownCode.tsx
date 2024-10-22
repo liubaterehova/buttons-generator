@@ -1,6 +1,7 @@
 import React from 'react';
 import Markdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
+import classnames from 'classnames';
 
 import 'highlight.js/styles/github.css';
 
@@ -11,19 +12,20 @@ interface IMarkdownCodeProps {
 
 export const MarkdownCode = ({ code, className }: IMarkdownCodeProps) => {
   return (
-    <Markdown
-      rehypePlugins={[
-        [
-          rehypeHighlight,
-          {
-            detect: true,
-            ignoreMissing: true,
-          },
-        ],
-      ]}
-      className={className}
-    >
-      {code}
-    </Markdown>
+    <div className={classnames('min-w-0', className)}>
+      <Markdown
+        rehypePlugins={[
+          [
+            rehypeHighlight,
+            {
+              detect: true,
+              ignoreMissing: true,
+            },
+          ],
+        ]}
+      >
+        {code}
+      </Markdown>
+    </div>
   );
 };
