@@ -40,14 +40,13 @@ export const ButtonGenerator = () => {
   document.title = 'Buttons Generator';
 
   const handleClickSendPrompt = async () => {
-    try {
-      const prompt = isStyleShown
-        ? generateButtonPrompt({ style })
-        : generateButtonPrompt({ color, size, title });
+    const prompt = isStyleShown
+      ? generateButtonPrompt({ style })
+      : generateButtonPrompt({ color, size, title });
 
-      await fetchOpenAiMutation(prompt);
-    } catch (error) {
-      showToast({ type: 'error', message: extractErrorMessage(error) });
+    const res = await fetchOpenAiMutation(prompt);
+    if ('error' in res) {
+      showToast({ type: 'error', message: extractErrorMessage(res.error) });
     }
   };
 
