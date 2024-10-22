@@ -12,7 +12,7 @@ interface IMarkdownCodeProps {
 
 export const MarkdownCode = ({ code, className }: IMarkdownCodeProps) => {
   return (
-    <div className={classnames('min-w-0', className)}>
+    <div className={classnames('min-w-0', 'text-center', className)}>
       <Markdown
         rehypePlugins={[
           [

@@ -8,6 +8,7 @@ import { fetchOpenAi } from '../libs/openai/index';
 import { useFetchMutation } from '../hooks/useFetchMutation';
 import { generateButtonPrompt } from '../libs/openai/prompt';
 import { MarkdownCode } from '../components/MarkdownCode';
+import { Toggle } from '../components/Toggle/Toggle';
 
 const extractErrorMessage = (error: unknown) => {
   if (
@@ -30,22 +31,30 @@ export const ButtonGenerator = () => {
     { data: aiComponent, isFetching: isFetchingPrompt },
   ] = useFetchMutation({ queryFn: fetchOpenAi });
 
+  const [isStyleShown, setIsStyleShown] = React.useState(false);
   const [color, setColor] = React.useState('');
   const [size, setSize] = React.useState('');
   const [title, setTitle] = React.useState('');
+  const [style, setStyle] = React.useState('');
 
   document.title = 'Buttons Generator';
 
   const handleClickSendPrompt = async () => {
     try {
-      await fetchOpenAiMutation(generateButtonPrompt({ color, size, title }));
+      const prompt = isStyleShown
+        ? generateButtonPrompt({ style })
+        : generateButtonPrompt({ color, size, title });
+
+      await fetchOpenAiMutation(prompt);
     } catch (error) {
       showToast({ type: 'error', message: extractErrorMessage(error) });
     }
   };
 
   const isButtonDisabled =
-    (!color.trim() && !size.trim() && !title.trim()) || isFetchingPrompt;
+    isFetchingPrompt || isStyleShown
+      ? !style.trim()
+      : !color.trim() && !size.trim() && !title.trim();
 
   return (
     <section className="grid container mx-auto">
@@ -53,30 +62,49 @@ export const ButtonGenerator = () => {
         <h1 className="text-2xl font-bold text-center">
           Customize your button styles
         </h1>
+
+        <Toggle
+          checked={isStyleShown}
+          onChange={setIsStyleShown}
+          label="Show style input"
+        />
+
         <FormLayout>
-          <LabeledInput
-            label="Color"
-            value={color}
-            onChange={setColor}
-            placeholder="Enter preferred color"
-            maxLength={50}
-          />
+          {isStyleShown ? (
+            <LabeledInput
+              label="Style"
+              value={style}
+              onChange={setStyle}
+              placeholder="Enter button style"
+              maxLength={300}
+            />
+          ) : (
+            <>
+              <LabeledInput
+                label="Color"
+                value={color}
+                onChange={setColor}
+                placeholder="Enter preferred color"
+                maxLength={50}
+              />
 
-          <LabeledInput
-            label="Size"
-            value={size}
-            onChange={setSize}
-            placeholder="Enter preferred size"
-            maxLength={50}
-          />
+              <LabeledInput
+                label="Size"
+                value={size}
+                onChange={setSize}
+                placeholder="Enter preferred size"
+                maxLength={50}
+              />
 
-          <LabeledInput
-            label="Title"
-            value={title}
-            onChange={setTitle}
-            placeholder="Enter button title"
-            maxLength={50}
-          />
+              <LabeledInput
+                label="Title"
+                value={title}
+                onChange={setTitle}
+                placeholder="Enter button title"
+                maxLength={50}
+              />
+            </>
+          )}
         </FormLayout>
 
         <button
